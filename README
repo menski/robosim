@@ -1,3 +1,57 @@
-RoboSim - Robot simulator
+* RoboSim - Robot simulator
 
-To build the sources please create a directory 'lib' and copy the .jar archive of SWT into it.
+** Build Instruction
+   To build the sources please create a directory 'lib' and copy the .jar archive of SWT into it.
+
+** Key Bindings
+
+   |----------------+------------------------------------------|
+   | Key            | Action                                   |
+   |----------------+------------------------------------------|
+   | CURSOR         | Move cursor                              |
+   | HOME           | Move cursor to the beginning of the line |
+   | END            | Move cursor to the end of the line       |
+   | PAGE_UP        | Move cursor to the top of the column     |
+   | PAGE_DOWN      | Move cursor to the bottom of the column  |
+   | MOUSE_BUTTON_1 | Move cursor to the mouse position        |
+   |----------------+------------------------------------------|
+   | SHIFT          | Set mark                                 |
+   | ESC            | Unset mark                               |
+   |----------------+------------------------------------------|
+   | DEL            | Remove robot from cursor field           |
+   | SPACE          | Set empty field                          |
+   | r              | Set/rotate robot                         |
+   | f              | Set floor field                          |
+   | w              | Set wall field                           |
+   | o              | Set obstacle field                       |
+   |----------------+------------------------------------------|
+
+** Shortcuts
+
+   |----------+--------------------------|
+   | Shortcut | Action                   |
+   |----------+--------------------------|
+   | CTRL-n   | New map                  |
+   | CTRL-o   | Open map                 |
+   | CTRL-s   | Save map                 |
+   | CTRL-w   | Save map as              |
+   | CTRL-q   | Exit                     |
+   | CTRL-a   | Add Columns/Lines to map |
+   |----------+--------------------------|
+
+** Valid characters in a 'rmf' (RoboSim-Map-File)
+   
+   |-----------+------------------------------|
+   | Character | Field                        |
+   |-----------+------------------------------|
+   | SPACE     | Empty field                  |
+   | w         | Wall field                   |
+   | f         | Floor field                  |
+   | o         | Obstacle field               |
+   | >         | Robot field (Rotation: 0°)   |
+   | ^         | Robot field (Rotation: 90°)  |
+   | <         | Robot field (Rotation: 180°) |
+   | v         | Robot field (Rotation: 270°) |
+   |-----------+------------------------------|
+  
+
