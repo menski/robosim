@@ -140,80 +140,65 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 	
 	private void drawRobot(GC gc, int size) {
 		if (map.isRobotSet()) {
-			gc.setBackground(display.getSystemColor(SWT.COLOR_DARK_YELLOW));
+			int x = map.getRobot().x;
+			int y = map.getRobot().y;
+			/* Tyres */
+			gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
 			switch (map.getRotation()) {
+			case 270:
+				gc.fillRectangle(x*size+(int)(1.3*size), y*size+(int)(1.65*size), (int)(0.4*size), (int)(0.1*size));
+				gc.fillRectangle(x*size+(int)(1.25*size), y*size+(int)(1.2*size), (int)(0.5*size), (int)(0.15*size));
+				break;
+			case 180:
+				gc.fillRectangle(x*size+(int)(1.2*size), y*size+(int)(1.3*size), (int)(0.1*size), (int)(0.4*size));
+				gc.fillRectangle(x*size+(int)(1.65*size), y*size+(int)(1.25*size), (int)(0.15*size), (int)(0.5*size));
+				break;
 			case 90:
-				gc.fillRectangle(map.getRobot().x*size+(int)(1.1*size), map.getRobot().y*size+(int)(1.8*size), (int)(0.8*size), (int)(0.1*size));
-				gc.fillRectangle(map.getRobot().x*size+(int)(1.1*size), map.getRobot().y*size+(int)(1.4*size), (int)(0.8*size), (int)(0.1*size));
-				break;
-			case 180:
-				gc.fillRectangle(map.getRobot().x*size+(int)(1.8*size), map.getRobot().y*size+(int)(1.1*size), (int)(0.1*size), (int)(0.8*size));
-				gc.fillRectangle(map.getRobot().x*size+(int)(1.4*size), map.getRobot().y*size+(int)(1.1*size), (int)(0.1*size), (int)(0.8*size));
-				break;
-			case 270:
-				gc.fillRectangle(map.getRobot().x*size+(int)(1.1*size), map.getRobot().y*size+(int)(1.1*size), (int)(0.8*size), (int)(0.1*size));
-				gc.fillRectangle(map.getRobot().x*size+(int)(1.1*size), map.getRobot().y*size+(int)(1.5*size), (int)(0.8*size), (int)(0.1*size));
+				gc.fillRectangle(x*size+(int)(1.3*size), y*size+(int)(1.2*size), (int)(0.4*size), (int)(0.1*size));
+				gc.fillRectangle(x*size+(int)(1.25*size), y*size+(int)(1.65*size), (int)(0.5*size), (int)(0.15*size));
 				break;
 			case 0:
+				gc.fillRectangle(x*size+(int)(1.65*size), y*size+(int)(1.3*size), (int)(0.1*size), (int)(0.4*size));
+				gc.fillRectangle(x*size+(int)(1.2*size), y*size+(int)(1.25*size), (int)(0.15*size), (int)(0.5*size));
 			default:
-				gc.fillRectangle(map.getRobot().x*size+(int)(1.1*size), map.getRobot().y*size+(int)(1.1*size), (int)(0.1*size), (int)(0.8*size));
-				gc.fillRectangle(map.getRobot().x*size+(int)(1.5*size), map.getRobot().y*size+(int)(1.1*size), (int)(0.1*size), (int)(0.8*size));
+				
 				break;
 			}
+			/* Front */
 			gc.setBackground(display.getSystemColor(SWT.COLOR_YELLOW));
-			int[] polygon = new int[10];
 			switch (map.getRotation()) {
-			case 90:	
-				polygon[0] = map.getRobot().x*size+(int)(1.2*size);
-				polygon[1] = map.getRobot().y*size+(int)(1.9*size);
-				polygon[2] = map.getRobot().x*size+(int)(1.2*size);
-				polygon[3] = map.getRobot().y*size+(int)(1.4*size);
-				polygon[4] = map.getRobot().x*size+(int)(1.5*size);
-				polygon[5] = map.getRobot().y*size+(int)(1.1*size);
-				polygon[6] = map.getRobot().x*size+(int)(1.8*size);
-				polygon[7] = map.getRobot().y*size+(int)(1.4*size);
-				polygon[8] = map.getRobot().x*size+(int)(1.8*size);
-				polygon[9] = map.getRobot().y*size+(int)(1.9*size);
+			case 270:
+				gc.fillRectangle(x*size+(int)(1.35*size), y*size+(int)(1.6*size), (int)(0.3*size), (int)(0.3*size));
 				break;
 			case 180:
-				polygon[0] = map.getRobot().x*size+(int)(1.9*size);
-				polygon[1] = map.getRobot().y*size+(int)(1.8*size);
-				polygon[2] = map.getRobot().x*size+(int)(1.4*size);
-				polygon[3] = map.getRobot().y*size+(int)(1.8*size);
-				polygon[4] = map.getRobot().x*size+(int)(1.1*size);
-				polygon[5] = map.getRobot().y*size+(int)(1.5*size);
-				polygon[6] = map.getRobot().x*size+(int)(1.4*size);
-				polygon[7] = map.getRobot().y*size+(int)(1.2*size);
-				polygon[8] = map.getRobot().x*size+(int)(1.9*size);
-				polygon[9] = map.getRobot().y*size+(int)(1.2*size);
+				gc.fillRectangle(x*size+(int)(1.1*size), y*size+(int)(1.35*size), (int)(0.3*size), (int)(0.3*size));
 				break;
+			case 90:
+				gc.fillRectangle(x*size+(int)(1.35*size), y*size+(int)(1.1*size), (int)(0.3*size), (int)(0.3*size));
+				break;
+			case 0:
+				gc.fillRectangle(x*size+(int)(1.6*size), y*size+(int)(1.35*size), (int)(0.3*size), (int)(0.3*size));
+			default:
+				
+				break;
+			}
+			/* Back */
+			gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
+			switch (map.getRotation()) {
 			case 270:
-				polygon[0] = map.getRobot().x*size+(int)(1.2*size);
-				polygon[1] = map.getRobot().y*size+(int)(1.1*size);
-				polygon[2] = map.getRobot().x*size+(int)(1.2*size);
-				polygon[3] = map.getRobot().y*size+(int)(1.6*size);
-				polygon[4] = map.getRobot().x*size+(int)(1.5*size);
-				polygon[5] = map.getRobot().y*size+(int)(1.9*size);
-				polygon[6] = map.getRobot().x*size+(int)(1.8*size);
-				polygon[7] = map.getRobot().y*size+(int)(1.6*size);
-				polygon[8] = map.getRobot().x*size+(int)(1.8*size);
-				polygon[9] = map.getRobot().y*size+(int)(1.1*size);
+				gc.fillRectangle(x*size+(int)(1.3*size), y*size+(int)(1.1*size), (int)(0.4*size), (int)(0.5*size));
+				break;
+			case 180:
+				gc.fillRectangle(x*size+(int)(1.4*size), y*size+(int)(1.3*size), (int)(0.5*size), (int)(0.4*size));
+				break;
+			case 90:
+				gc.fillRectangle(x*size+(int)(1.3*size), y*size+(int)(1.4*size), (int)(0.4*size), (int)(0.5*size));
 				break;
 			case 0:
 			default:
-				polygon[0] = map.getRobot().x*size+(int)(1.1*size);
-				polygon[1] = map.getRobot().y*size+(int)(1.2*size);
-				polygon[2] = map.getRobot().x*size+(int)(1.6*size);
-				polygon[3] = map.getRobot().y*size+(int)(1.2*size);
-				polygon[4] = map.getRobot().x*size+(int)(1.9*size);
-				polygon[5] = map.getRobot().y*size+(int)(1.5*size);
-				polygon[6] = map.getRobot().x*size+(int)(1.6*size);
-				polygon[7] = map.getRobot().y*size+(int)(1.8*size);
-				polygon[8] = map.getRobot().x*size+(int)(1.1*size);
-				polygon[9] = map.getRobot().y*size+(int)(1.8*size);
+				gc.fillRectangle(x*size+(int)(1.1*size), y*size+(int)(1.3*size), (int)(0.5*size), (int)(0.4*size));
 				break;
 			}
-			gc.fillPolygon(polygon);
 		}
 		resetColors(gc);
 	}

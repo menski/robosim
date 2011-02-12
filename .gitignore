@@ -2,6 +2,6 @@ bin/*
 dist/*
 lib/swt.jar
 *~
-*.log
+*.log*
 .classpath
 .project
