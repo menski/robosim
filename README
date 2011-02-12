@@ -1,1 +1,3 @@
 RoboSim - Robot simulator
+
+To build the sources please create a directory 'lib' and copy the .jar archive of SWT into it.
