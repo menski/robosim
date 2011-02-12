@@ -1,9 +1,12 @@
 package de.menski.robosim;
 import java.io.File;
+import java.util.logging.Logger;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
@@ -23,12 +26,17 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 public class RoboMapEditor implements PaintListener, KeyListener {
+	
+	private final static Logger LOGGER = Logger.getLogger(RoboMapEditor.class.getName());
+	
+	public final static int MAX_FIELD_SIZE = 90;
 
 	private Display display;
 	private Shell shell;
 	private Canvas canvas;
 	private RoboMap map;
 	private Label statusbarLabel;
+	private int fieldSize;
 	
 	public RoboMapEditor(RoboMap map) {
 		this.map = map;
@@ -53,19 +61,18 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 	@Override
 	public void paintControl(PaintEvent e) {
 		Rectangle rect = canvas.getClientArea();
-		int size = Math.min(Math.min(rect.width/(map.getXSize()+2), rect.height/(map.getYSize()+2)),90);
-
+		fieldSize = Math.min(Math.min(rect.width/(map.getXSize()+2), rect.height/(map.getYSize()+2)), MAX_FIELD_SIZE);
 		for (int y = 0; y < map.getYSize(); ++y) {
 			for (int x = 0; x < map.getSize(y); ++x) {
-				drawField(e.gc, x, y, size, map.getField(y, x));
+				drawField(e.gc, x, y, map.getField(y, x));
 			}
 		}
-		drawCursor(e.gc, size);
-		drawRobot(e.gc, size);
+		drawCursor(e.gc);
+		drawRobot(e.gc);
 	}
 	
-	private void drawField(GC gc, int x, int y, int size, char type) {
-		Rectangle field = new Rectangle((x+1)*size, (y+1)*size, size, size);
+	private void drawField(GC gc, int x, int y, char type) {
+		Rectangle field = new Rectangle((x+1)*fieldSize, (y+1)*fieldSize, fieldSize, fieldSize);
 		switch (type) {
 		case 'w':
 			drawWall(gc, field);
@@ -83,12 +90,12 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 		gc.drawRectangle(field);		
 	}
 	
-	private void drawCursor(GC gc, int size) {
+	private void drawCursor(GC gc) {
 		gc.setForeground(display.getSystemColor(SWT.COLOR_GREEN));
 		gc.setLineWidth(3);
 		for (int y = map.getMinMarkY(); y <= map.getMaxMarkY(); ++y) {
 			for (int x = map.getMinMarkX(); x <= map.getMaxMarkX(); ++x) {
-				gc.drawRectangle((x+1)*size, (y+1)*size, size, size);
+				gc.drawRectangle((x+1)*fieldSize, (y+1)*fieldSize, fieldSize, fieldSize);
 			}
 		}
 		gc.setLineWidth(0);
@@ -103,11 +110,6 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 	private void drawWall(GC gc, Rectangle field) {
 		gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
 		gc.fillRectangle(field);
-//		gc.drawLine(field.x, field.y+(int)(0.3*field.height), field.x+(int)(0.3*field.width), field.y);
-//		gc.drawLine(field.x, field.y+(int)(0.6*field.height), field.x+(int)(0.6*field.width), field.y);
-//		gc.drawLine(field.x, field.y+field.height, field.x+field.width, field.y);
-//		gc.drawLine(field.x+(int)(0.3*field.width), field.y+field.height, field.x+field.width, field.y+(int)(0.3*field.height));
-//		gc.drawLine(field.x+(int)(0.6*field.width), field.y+field.height, field.x+field.width, field.y+(int)(0.6*field.height));
 		gc.drawLine(field.x, field.y+(int)(field.height/4), field.x+field.width, field.y+(int)(field.height/4));
 		gc.drawLine(field.x+(int)(field.width/3), field.y, field.x+(int)(field.width/3), field.y+(int)(field.height/4));
 		gc.drawLine(field.x+(int)(field.width*2/3), field.y, field.x+(int)(field.width*2/3), field.y+(int)(field.height/4));
@@ -138,7 +140,7 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 		gc.drawLine(field.x+field.width, field.y, field.x, field.y+field.height);
 	}
 	
-	private void drawRobot(GC gc, int size) {
+	private void drawRobot(GC gc) {
 		if (map.isRobotSet()) {
 			int x = map.getRobot().x;
 			int y = map.getRobot().y;
@@ -146,20 +148,20 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 			gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
 			switch (map.getRotation()) {
 			case 270:
-				gc.fillRectangle(x*size+(int)(1.3*size), y*size+(int)(1.65*size), (int)(0.4*size), (int)(0.1*size));
-				gc.fillRectangle(x*size+(int)(1.25*size), y*size+(int)(1.2*size), (int)(0.5*size), (int)(0.15*size));
+				gc.fillRectangle(x*fieldSize+(int)(1.3*fieldSize), y*fieldSize+(int)(1.65*fieldSize), (int)(0.4*fieldSize), (int)(0.1*fieldSize));
+				gc.fillRectangle(x*fieldSize+(int)(1.25*fieldSize), y*fieldSize+(int)(1.2*fieldSize), (int)(0.5*fieldSize), (int)(0.15*fieldSize));
 				break;
 			case 180:
-				gc.fillRectangle(x*size+(int)(1.2*size), y*size+(int)(1.3*size), (int)(0.1*size), (int)(0.4*size));
-				gc.fillRectangle(x*size+(int)(1.65*size), y*size+(int)(1.25*size), (int)(0.15*size), (int)(0.5*size));
+				gc.fillRectangle(x*fieldSize+(int)(1.2*fieldSize), y*fieldSize+(int)(1.3*fieldSize), (int)(0.1*fieldSize), (int)(0.4*fieldSize));
+				gc.fillRectangle(x*fieldSize+(int)(1.65*fieldSize), y*fieldSize+(int)(1.25*fieldSize), (int)(0.15*fieldSize), (int)(0.5*fieldSize));
 				break;
 			case 90:
-				gc.fillRectangle(x*size+(int)(1.3*size), y*size+(int)(1.2*size), (int)(0.4*size), (int)(0.1*size));
-				gc.fillRectangle(x*size+(int)(1.25*size), y*size+(int)(1.65*size), (int)(0.5*size), (int)(0.15*size));
+				gc.fillRectangle(x*fieldSize+(int)(1.3*fieldSize), y*fieldSize+(int)(1.2*fieldSize), (int)(0.4*fieldSize), (int)(0.1*fieldSize));
+				gc.fillRectangle(x*fieldSize+(int)(1.25*fieldSize), y*fieldSize+(int)(1.65*fieldSize), (int)(0.5*fieldSize), (int)(0.15*fieldSize));
 				break;
 			case 0:
-				gc.fillRectangle(x*size+(int)(1.65*size), y*size+(int)(1.3*size), (int)(0.1*size), (int)(0.4*size));
-				gc.fillRectangle(x*size+(int)(1.2*size), y*size+(int)(1.25*size), (int)(0.15*size), (int)(0.5*size));
+				gc.fillRectangle(x*fieldSize+(int)(1.65*fieldSize), y*fieldSize+(int)(1.3*fieldSize), (int)(0.1*fieldSize), (int)(0.4*fieldSize));
+				gc.fillRectangle(x*fieldSize+(int)(1.2*fieldSize), y*fieldSize+(int)(1.25*fieldSize), (int)(0.15*fieldSize), (int)(0.5*fieldSize));
 			default:
 				
 				break;
@@ -168,16 +170,16 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 			gc.setBackground(display.getSystemColor(SWT.COLOR_YELLOW));
 			switch (map.getRotation()) {
 			case 270:
-				gc.fillRectangle(x*size+(int)(1.35*size), y*size+(int)(1.6*size), (int)(0.3*size), (int)(0.3*size));
+				gc.fillRectangle(x*fieldSize+(int)(1.35*fieldSize), y*fieldSize+(int)(1.6*fieldSize), (int)(0.3*fieldSize), (int)(0.3*fieldSize));
 				break;
 			case 180:
-				gc.fillRectangle(x*size+(int)(1.1*size), y*size+(int)(1.35*size), (int)(0.3*size), (int)(0.3*size));
+				gc.fillRectangle(x*fieldSize+(int)(1.1*fieldSize), y*fieldSize+(int)(1.35*fieldSize), (int)(0.3*fieldSize), (int)(0.3*fieldSize));
 				break;
 			case 90:
-				gc.fillRectangle(x*size+(int)(1.35*size), y*size+(int)(1.1*size), (int)(0.3*size), (int)(0.3*size));
+				gc.fillRectangle(x*fieldSize+(int)(1.35*fieldSize), y*fieldSize+(int)(1.1*fieldSize), (int)(0.3*fieldSize), (int)(0.3*fieldSize));
 				break;
 			case 0:
-				gc.fillRectangle(x*size+(int)(1.6*size), y*size+(int)(1.35*size), (int)(0.3*size), (int)(0.3*size));
+				gc.fillRectangle(x*fieldSize+(int)(1.6*fieldSize), y*fieldSize+(int)(1.35*fieldSize), (int)(0.3*fieldSize), (int)(0.3*fieldSize));
 			default:
 				
 				break;
@@ -186,17 +188,17 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 			gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
 			switch (map.getRotation()) {
 			case 270:
-				gc.fillRectangle(x*size+(int)(1.3*size), y*size+(int)(1.1*size), (int)(0.4*size), (int)(0.5*size));
+				gc.fillRectangle(x*fieldSize+(int)(1.3*fieldSize), y*fieldSize+(int)(1.1*fieldSize), (int)(0.4*fieldSize), (int)(0.5*fieldSize));
 				break;
 			case 180:
-				gc.fillRectangle(x*size+(int)(1.4*size), y*size+(int)(1.3*size), (int)(0.5*size), (int)(0.4*size));
+				gc.fillRectangle(x*fieldSize+(int)(1.4*fieldSize), y*fieldSize+(int)(1.3*fieldSize), (int)(0.5*fieldSize), (int)(0.4*fieldSize));
 				break;
 			case 90:
-				gc.fillRectangle(x*size+(int)(1.3*size), y*size+(int)(1.4*size), (int)(0.4*size), (int)(0.5*size));
+				gc.fillRectangle(x*fieldSize+(int)(1.3*fieldSize), y*fieldSize+(int)(1.4*fieldSize), (int)(0.4*fieldSize), (int)(0.5*fieldSize));
 				break;
 			case 0:
 			default:
-				gc.fillRectangle(x*size+(int)(1.1*size), y*size+(int)(1.3*size), (int)(0.5*size), (int)(0.4*size));
+				gc.fillRectangle(x*fieldSize+(int)(1.1*fieldSize), y*fieldSize+(int)(1.3*fieldSize), (int)(0.5*fieldSize), (int)(0.4*fieldSize));
 				break;
 			}
 		}
@@ -269,6 +271,24 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 		canvas.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
 		canvas.addPaintListener(this);
 		canvas.addKeyListener(this);
+		canvas.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseUp(MouseEvent e) {}
+			
+			@Override
+			public void mouseDown(MouseEvent e) {
+				LOGGER.info(String.format("Mouse Click: x=%d y=%d fs=%d => field=(%d,%d)", e.x, e.y, fieldSize, (int)(e.y/fieldSize)-1, (int)(e.x/fieldSize)-1));
+				int x = (int)(e.x/fieldSize)-1;
+				int y = (int)(e.y/fieldSize)-1;
+				if (x < map.getXSize() && y < map.getYSize()) {
+					map.setCursor(x, y);
+					update();
+				}
+			}
+			
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {}
+		});
 	}
 	
 	private void addStatusbar() {

@@ -163,6 +163,10 @@ public class RoboMap {
 		return cursor;
 	}
 	
+	public void setCursor(int x, int y) {
+		setPoint(cursor, x, y);
+	}
+	
 	public void setCursorLeft() {
 		cursor.x = 0;
 	}
