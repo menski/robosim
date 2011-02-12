@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="RoboSim" default="run" basedir=".">
+
+  	<property name="src.dir" value="src/" />
+  	<property name="bin.dir" value="bin/" />
+  	<property name="lib.dir" value="lib/" />
+  	<property name="dist.dir" value="dist/" />
+
+  	<target name="init" description="Create directories for java classes and .jar archive">
+    	<mkdir dir="${bin.dir}"/>
+    	<mkdir dir="${dist.dir}"/>
+  	</target>
+	
+  	<target name="clean" description="Remove all compiled classes and deployed .jar archives">
+  		<delete dir="${bin.dir}" />
+  		<delete dir="${dist.dir}" />
+  	</target>
+
+  	<target name="compile" depends="init" description="Compile the sources">
+    	<javac srcdir="${src.dir}" destdir="${bin.dir}" classpath="${lib.dir}/swt.jar" includeantruntime="false"/>
+  	</target>
+	
+	<target name="deploy" depends="compile" description="Pack classes to a .jar archive">
+		<jar destfile="${dist.dir}\StringEditor.jar" basedir="${bin.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="RoboSim" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="run" depends="deploy" description="Run application">
+		<java classname="de.menski.robosim.RoboSim" fork="true" classpath="${lib.dir}/swt.jar:${dist.dir}/StringEditor.jar" />
+	</target>
+
+</project>
