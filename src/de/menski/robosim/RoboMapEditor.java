@@ -463,10 +463,10 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 			}
 		});
 		
-		MenuItem addLinesMenu = new MenuItem(editMenu, SWT.PUSH);
-		addLinesMenu.setText("&Add fields\tCTRL+a");
-		addLinesMenu.setAccelerator(SWT.CTRL + 'A');
-		addLinesMenu.addListener(SWT.Selection, new Listener() {
+		MenuItem editAddLinesMenu = new MenuItem(editMenu, SWT.PUSH);
+		editAddLinesMenu.setText("&Add fields\tCTRL+a");
+		editAddLinesMenu.setAccelerator(SWT.CTRL + 'A');
+		editAddLinesMenu.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				AddFieldsDialog afd = new AddFieldsDialog(shell);
@@ -477,6 +477,27 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 			}
 		});
 		
+		new MenuItem(editMenu, SWT.SEPARATOR);
+		
+		MenuItem editSetMark = new MenuItem(editMenu, SWT.PUSH);
+		editSetMark.setText("Set mark\tSHIFT");
+		editSetMark.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event arg0) {
+				map.setMark();
+				update();
+			}
+		});
+		
+		MenuItem editUnsetMark = new MenuItem(editMenu, SWT.PUSH);
+		editUnsetMark.setText("Unset mark\tESC");
+		editUnsetMark.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event arg0) {
+				map.unsetMark();
+				update();
+			}
+		});
 		shell.setMenuBar(menuBar);
 	}
 	
