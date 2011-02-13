@@ -3,32 +3,34 @@
 
   	<property name="src.dir" value="src/" />
   	<property name="bin.dir" value="bin/" />
-  	<property name="lib.dir" value="lib/" />
+  	<property name="lib.dir" value="lib" />
   	<property name="dist.dir" value="dist/" />
-
-	<property name="os.arch" location="${os.arch}"/>
 	
-	<target name="arch">
-		<echo> ${os.arch} </echo>
-		<echo> ${os.name} </echo>
-	</target>
-
   	<target name="init" description="Create directories for java classes and .jar archive">
     	<mkdir dir="${bin.dir}"/>
     	<mkdir dir="${dist.dir}"/>
+  		<condition property="isWindows">
+  			<os family="windows" />
+  		</condition>
+  		<condition property="isUnix">
+  			<os family="unix" />
+  		</condition>
   	</target>
 	
-  	<target name="clean" description="Remove all compiled classes and deployed .jar archives">
-  		<delete dir="${bin.dir}" />
-  		<delete dir="${dist.dir}" />
-  	</target>
-
-  	<target name="compile" depends="init" description="Compile the sources">
-    	<javac srcdir="${src.dir}" destdir="${bin.dir}" classpath="${lib.dir}/swt/swt_${os.name}_${os.arch}.jar" includeantruntime="false"/>
+	<target name="windows" if="isWindows" description="Set windows properties">
+		<property name="swt.lib" value="${lib.dir}/swt/swt_win_${os.arch}.jar" />
+	</target>
+	
+	<target name="linux" if="isUnix" description="Set linux properties">
+		<property name="swt.lib" value="${lib.dir}/swt/swt_linux_${os.arch}.jar" />
+	</target>
+	
+  	<target name="compile" depends="init,windows,linux" description="Compile the sources">
+    	<javac srcdir="${src.dir}" destdir="${bin.dir}" classpath="${swt.lib}" includeantruntime="false"/>
   	</target>
 	
 	<target name="deploy" depends="compile" description="Pack classes to a .jar archive">
-		<jar destfile="${dist.dir}\StringEditor.jar" basedir="${bin.dir}">
+		<jar destfile="${dist.dir}/RoboSim.jar" basedir="${bin.dir}">
 			<manifest>
 				<attribute name="Main-Class" value="RoboSim" />
 			</manifest>
@@ -36,7 +38,12 @@
 	</target>
 	
 	<target name="run" depends="deploy" description="Run application">
-		<java classname="de.menski.robosim.RoboSim" fork="true" classpath="${lib.dir}/swt/swt_${os.name}_${os.arch}.jar:${dist.dir}/StringEditor.jar" />
+		<java classname="de.menski.robosim.RoboSim" fork="true" classpath="${swt.lib}:${dist.dir}/RoboSim.jar" />
 	</target>
 
+  	<target name="clean" description="Remove all compiled classes and deployed .jar archives">
+  		<delete dir="${bin.dir}" />
+  		<delete dir="${dist.dir}" />
+  	</target>
+	
 </project>
