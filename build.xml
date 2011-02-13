@@ -15,17 +15,32 @@
   		<condition property="isUnix">
   			<os family="unix" />
   		</condition>
+  		<condition property="isx86">
+  			<os arch="x86" />
+  		</condition>
+  		<condition property="isamd64">
+  			<os arch="amd64" />
+  		</condition>
   	</target>
 	
-	<target name="windows" if="isWindows" description="Set windows properties">
-		<property name="swt.lib" value="${lib.dir}/swt/swt_win_${os.arch}.jar" />
+	<target name="x86" if="isx86">
+		<property name="arch" value="x86.jar" />
 	</target>
 	
-	<target name="linux" if="isUnix" description="Set linux properties">
-		<property name="swt.lib" value="${lib.dir}/swt/swt_linux_${os.arch}.jar" />
+	<target name="amd64" if="isamd64">
+			<property name="arch" value="amd64.jar" />
+		</target>
+	
+	<target name="windows" depends="x86,amd64" if="isWindows" description="Set windows properties">
+		<property name="swt.lib" value="${lib.dir}/swt/swt_win_${arch}" />
+	</target>
+	
+	<target name="linux" depends="x86,amd64" if="isUnix" description="Set linux properties">
+		<property name="swt.lib" value="${lib.dir}/swt/swt_linux_${arch}" />
 	</target>
 	
   	<target name="compile" depends="init,windows,linux" description="Compile the sources">
+  		<echo> Set swt.lib to ${swt.lib}</echo>
     	<javac srcdir="${src.dir}" destdir="${bin.dir}" classpath="${swt.lib}" includeantruntime="false"/>
   	</target>
 	
