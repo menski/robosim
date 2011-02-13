@@ -6,6 +6,13 @@
   	<property name="lib.dir" value="lib/" />
   	<property name="dist.dir" value="dist/" />
 
+	<property name="os.arch" location="${os.arch}"/>
+	
+	<target name="arch">
+		<echo> ${os.arch} </echo>
+		<echo> ${os.name} </echo>
+	</target>
+
   	<target name="init" description="Create directories for java classes and .jar archive">
     	<mkdir dir="${bin.dir}"/>
     	<mkdir dir="${dist.dir}"/>
@@ -17,7 +24,7 @@
   	</target>
 
   	<target name="compile" depends="init" description="Compile the sources">
-    	<javac srcdir="${src.dir}" destdir="${bin.dir}" classpath="${lib.dir}/swt.jar" includeantruntime="false"/>
+    	<javac srcdir="${src.dir}" destdir="${bin.dir}" classpath="${lib.dir}/swt/swt_${os.name}_${os.arch}.jar" includeantruntime="false"/>
   	</target>
 	
 	<target name="deploy" depends="compile" description="Pack classes to a .jar archive">
@@ -29,7 +36,7 @@
 	</target>
 	
 	<target name="run" depends="deploy" description="Run application">
-		<java classname="de.menski.robosim.RoboSim" fork="true" classpath="${lib.dir}/swt.jar:${dist.dir}/StringEditor.jar" />
+		<java classname="de.menski.robosim.RoboSim" fork="true" classpath="${lib.dir}/swt/swt_${os.name}_${os.arch}.jar:${dist.dir}/StringEditor.jar" />
 	</target>
 
 </project>
