@@ -1,7 +1,16 @@
 * RoboSim - Robot simulator
 
 ** Build Instruction
-   To build the sources please create a directory 'lib' and copy the .jar archive of SWT into it.
+   To Build the sources please use Apache Ant
+
+   |-------------+------------------------------------------|
+   | Ant target  | Action                                   |
+   |-------------+------------------------------------------|
+   | ant compile | to compile the sources                   |
+   | ant deploy  | to deploy a .jar file into the dist/ dir |
+   | ant run     | to start the programm                    |
+   | ant clean   | to delete the compiled sources           |
+   |-------------+------------------------------------------|
 
 ** Key Bindings
 
