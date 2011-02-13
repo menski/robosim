@@ -21,17 +21,24 @@
   		<condition property="isamd64">
   			<os arch="amd64" />
   		</condition>
+  		<condition property="isi386">
+  			<os arch="i386" />
+  		</condition>
   	</target>
 	
 	<target name="x86" if="isx86">
 		<property name="arch" value="x86.jar" />
 	</target>
 	
-	<target name="amd64" if="isamd64">
-			<property name="arch" value="amd64.jar" />
-		</target>
+	<target name="i386" if="isi386">
+		<property name="arch" value="x86.jar" />
+	</target>
 	
-	<target name="windows" depends="x86,amd64" if="isWindows" description="Set windows properties">
+	<target name="amd64" if="isamd64">
+		<property name="arch" value="amd64.jar" />
+	</target>
+	
+	<target name="windows" depends="x86,i386,amd64" if="isWindows" description="Set windows properties">
 		<property name="swt.lib" value="${lib.dir}/swt/swt_win_${arch}" />
 	</target>
 	
