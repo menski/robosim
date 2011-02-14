@@ -7,6 +7,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
@@ -37,7 +38,8 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 	private RoboMap map;
 	private Label statusbarLabel;
 	private int fieldSize;
-	
+	private boolean mouseDown;
+
 	public RoboMapEditor(RoboMap map) {
 		this.map = map;
 		display = new Display ();
@@ -271,9 +273,32 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 		canvas.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
 		canvas.addPaintListener(this);
 		canvas.addKeyListener(this);
+		canvas.addMouseMoveListener(new MouseMoveListener() {
+			
+			@Override
+			public void mouseMove(MouseEvent e) {
+				if (mouseDown) {
+					int x = (int)(e.x/fieldSize)-1;
+					int y = (int)(e.y/fieldSize)-1;
+					if (x < map.getXSize() && y < map.getYSize()) {
+						map.setCursor(x, y);
+						update();
+					}
+				}
+			}
+		});
 		canvas.addMouseListener(new MouseListener() {
 			@Override
-			public void mouseUp(MouseEvent e) {}
+			public void mouseUp(MouseEvent e) {
+				LOGGER.info(String.format("Mouse Click: x=%d y=%d fs=%d => field=(%d,%d)", e.x, e.y, fieldSize, (int)(e.y/fieldSize)-1, (int)(e.x/fieldSize)-1));
+				int x = (int)(e.x/fieldSize)-1;
+				int y = (int)(e.y/fieldSize)-1;
+				if (x < map.getXSize() && y < map.getYSize()) {
+					map.setCursor(x, y);
+					update();			
+				}
+				mouseDown = false;
+			}
 			
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -282,8 +307,10 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 				int y = (int)(e.y/fieldSize)-1;
 				if (x < map.getXSize() && y < map.getYSize()) {
 					map.setCursor(x, y);
+					map.setMark();
 					update();
 				}
+				mouseDown = true;
 			}
 			
 			@Override
