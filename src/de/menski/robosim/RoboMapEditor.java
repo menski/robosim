@@ -35,6 +35,7 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 	private Display display;
 	private Shell shell;
 	private Canvas canvas;
+	private ToolCanvas toolCanvas;
 	private RoboMap map;
 	private Label statusbarLabel;
 	private int fieldSize;
@@ -47,11 +48,22 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 		shell.setSize(640, 480);
 		shell.setLayout(new FormLayout());
 		addStatusbar();
+		addToolCanvas();
 		addCanvas();
 		addMenubar();
 		update();
 	}
 	
+	private void addToolCanvas() {
+		toolCanvas = new ToolCanvas(shell, SWT.BORDER);
+		FormData formData = new FormData();
+		formData.top = new FormAttachment(0);
+		formData.bottom = new FormAttachment(statusbarLabel);
+		formData.left = new FormAttachment(0);
+		formData.right = new FormAttachment(7);
+		toolCanvas.setLayoutData(formData);
+	}
+
 	public void open() {
 		shell.open ();
 		while (!shell.isDisposed ()) {
@@ -75,6 +87,7 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 	
 	private void drawField(GC gc, int x, int y, char type) {
 		Rectangle field = new Rectangle((x+1)*fieldSize, (y+1)*fieldSize, fieldSize, fieldSize);
+		resetColors(gc);
 		switch (type) {
 		case 'w':
 			drawWall(gc, field);
@@ -89,7 +102,7 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 			break;
 		}
 		resetColors(gc);
-		gc.drawRectangle(field);		
+		gc.drawRectangle(field);	
 	}
 	
 	private void drawCursor(GC gc) {
@@ -125,6 +138,7 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 		gc.drawLine(field.x+(int)(field.width/6), field.y+(int)(field.height*3/4), field.x+(int)(field.width/6), field.y+field.height);
 		gc.drawLine(field.x+(int)(field.width*3/6), field.y+(int)(field.height*3/4), field.x+(int)(field.width*3/6), field.y+field.height);
 		gc.drawLine(field.x+(int)(field.width*5/6), field.y+(int)(field.height*3/4), field.x+(int)(field.width*5/6), field.y+field.height);
+		resetColors(gc);
 	}
 	
 	private void drawFloor(GC gc, Rectangle field) {
@@ -133,6 +147,7 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 		gc.setForeground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
 		gc.drawLine(field.x+(int)(0.5*field.width), field.y, field.x+(int)(0.5*field.width), field.y+field.height);
 		gc.drawLine(field.x, field.y+(int)(0.5*field.height), field.x+field.width, field.y+(int)(0.5*field.height));
+		resetColors(gc);
 	}
 	
 	private void drawObstacle(GC gc, Rectangle field) {
@@ -140,6 +155,7 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 		gc.fillRectangle(field);
 		gc.drawLine(field.x, field.y, field.x+field.width, field.y+field.height);
 		gc.drawLine(field.x+field.width, field.y, field.x, field.y+field.height);
+		resetColors(gc);
 	}
 	
 	private void drawRobot(GC gc) {
@@ -265,7 +281,7 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 	private void addCanvas() {
 		canvas = new Canvas(shell, SWT.BORDER);
 		FormData canvasData = new FormData();
-		canvasData.left = new FormAttachment(0);
+		canvasData.left = new FormAttachment(toolCanvas);
 		canvasData.right = new FormAttachment(100);
 		canvasData.top = new FormAttachment(0);
 		canvasData.bottom = new FormAttachment(statusbarLabel);
