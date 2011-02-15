@@ -222,6 +222,10 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 		}
 		resetColors(gc);
 	}
+	
+	public void setField(char c) {
+		map.setField(c);
+	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -260,13 +264,14 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 			map.setCursorBottom();
 			break;
 		default:
-			switch (Character.toLowerCase(e.character)) {
+			char c = Character.toLowerCase(e.character); 
+			switch (c) {
 			case 'f':
 			case 'w':
 			case 'o':
 			case 'r':
 			case ' ':
-				map.setField(Character.toLowerCase(e.character));
+				setField(c);
 				break;
 			default:
 				break;
@@ -311,6 +316,10 @@ public class RoboMapEditor implements PaintListener, KeyListener {
 				int y = (int)(e.y/fieldSize)-1;
 				if (x < map.getXSize() && y < map.getYSize()) {
 					map.setCursor(x, y);
+					char c = toolCanvas.getSelected();
+					if (c != 0) {
+						setField(c);
+					}
 					update();			
 				}
 				mouseDown = false;

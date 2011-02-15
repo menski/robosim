@@ -1,8 +1,5 @@
 package de.menski.robosim;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -15,11 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import sun.rmi.runtime.Log;
-
 public class ToolCanvas extends Canvas implements PaintListener, MouseListener {
-	
-	private final static Logger LOGGER = Logger.getLogger(ToolCanvas.class.getName());
 
 	private static final char[] BUTTONS = {'0', ' ', 'f', 'w', 'o', 'r'};
 	private static final int NFIELDS = BUTTONS.length;
@@ -48,7 +41,7 @@ public class ToolCanvas extends Canvas implements PaintListener, MouseListener {
 			Rectangle field = new Rectangle(fieldBorder, (i+1)*fieldBorder+i*fieldSize, fieldSize, fieldSize);
 			switch (i) {
 			case 0:				
-				drawNothing(e.gc, field);
+				drawPointer(e.gc, field);
 				break;
 			case 1:
 				e.gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
@@ -90,8 +83,8 @@ public class ToolCanvas extends Canvas implements PaintListener, MouseListener {
 		resetColors(gc);		
 	}
 	
-	private void drawNothing(GC gc, Rectangle field) {
-		gc.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
+	private void drawPointer(GC gc, Rectangle field) {
+		gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_FOREGROUND));
 		int[] polygon = new int[14];
 		polygon[0] = field.x+(int)(0.9*field.width);
 		polygon[1] = field.y+(int)(0.8*field.height);
